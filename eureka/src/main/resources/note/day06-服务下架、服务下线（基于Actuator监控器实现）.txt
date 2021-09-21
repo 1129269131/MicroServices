@@ -1,0 +1,21 @@
+一、分别以debugger模式启动eureka-01-server-8000 服务端和eureka-02-provider-8081 客户端 服务器
+	查看启动情况：
+		http://localhost:8000/
+		http://localhost:8081/actuator/health
+
+二、使用postman访问如下接口（POST方式）
+	1、服务下架（无需请求体和请求头）：
+		http://localhost:8081/actuator/shutdown
+		
+	2、服务下线（请求头为：Content-Type: application/json）：
+		http://localhost:8081/actuator/serviceregistry
+			请求体为：
+				{
+					"status":"OUT_OF_SERVICE"
+				}
+				或者
+				{
+					"status":"UP"
+				}
+				
+三、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态

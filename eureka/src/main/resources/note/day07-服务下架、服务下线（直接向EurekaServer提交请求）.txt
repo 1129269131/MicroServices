@@ -1,0 +1,22 @@
+一、分别以debugger模式启动eureka-01-server-8000 服务端和eureka-02-provider-8081 客户端 服务器
+	查看启动情况：
+		http://localhost:8000/
+		http://localhost:8081/actuator/health
+		
+可以通过直接向Eureka Server提交不同的请求的方式来实现指定服务离线操作：
+	服务下架：通过向eureka server发送DELETE请求来删除指定client的服务
+			  http://${server}:${port}/eureka/apps/${serviceName}/${instanceId}
+			  
+	服务下线：通过向eureka server发送PUT请求来修改指定client的status，
+			  其中${value}的取值为：OUT_OF_SERVICE或UP
+			  http://${server}:${port}/eureka/apps/${serviceName}/${instanceId}/status?value=${value}
+
+二、使用postman访问如下接口
+	1、服务下架（DELETE方式，无需请求头，无需请求体）：
+		http://localhost:8000/eureka/apps/ABCMSC-PROVIDER-DEPART/localhost:abcmsc-provider-depart:8081
+		
+	2、服务下线（PUT方式，无需请求头，无需请求体）：
+		http://localhost:8000/eureka/apps/ABCMSC-PROVIDER-DEPART/localhost:abcmsc-provider-depart:8081/status?value=OUT_OF_SERVICE
+			value=OUT_OF_SERVICE 或者 value=UP
+				
+三、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态

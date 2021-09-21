@@ -1,0 +1,13 @@
+一、EurekaClientAutoConfiguration.java 的 public EurekaClient eurekaClient(ApplicationInfoManager manager, EurekaClientConfig config, 处里的
+	CloudEurekaClient cloudEurekaClient = new CloudEurekaClient(appManager, config, this.optionalArgs, 点击进入CloudEurekaClient.java的构造器处
+	
+二、
+	点击CloudEurekaClient.java构造器中的 super(applicationInfoManager, config, args); 进入DiscoveryClient.java的构造器处
+	
+三、连续点击DiscoveryClient.java的this方法
+	直到找到拥有5个参数的构造器，这边就是 获取注册表、注册、定时任务的入口函数
+	
+四、关注DiscoveryClient.java 构造器中的：
+	1、boolean primaryFetchRegistryResult = fetchRegistry(false);
+	2、if (!register() ) {
+	3、initScheduledTasks();
