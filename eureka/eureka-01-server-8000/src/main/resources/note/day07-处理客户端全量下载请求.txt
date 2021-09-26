@@ -1,0 +1,13 @@
+一、ApplicationsResource.java类的 public Response getContainers(@PathParam("version") String version, 方法里打上断点
+
+二、ResponseCacheImpl.java类的 ResponseCacheImpl(EurekaServerConfig serverConfig, ServerCodecs serverCodecs, AbstractInstanceRegistry registry) { 构造器方法里打上断点（关注 this.readWriteCacheMap = 的赋值部分）
+
+三、debugger模式启动eureka-01-server-8000 服务端
+	查看启动情况：
+		http://localhost:8000/
+
+四、debugger模式启动eureka-02-provider-8081 客户端 服务器
+				
+五、debugger并进行查看
+
+六、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态

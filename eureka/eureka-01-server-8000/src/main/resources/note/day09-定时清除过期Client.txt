@@ -1,0 +1,13 @@
+一、AbstractInstanceRegistry.java类的 class EvictionTask extends TimerTask { 里的run()方法里打上断点
+
+二、debugger模式启动eureka-01-server-8000 服务端
+
+三、debugger模式启动eureka-02-provider-8081 客户端 服务器
+
+四、等待一段时间
+				
+五、debugger并进行查看
+
+六、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态
+
+PS：模块 eureka-01-server-8000 --》resources --》other --》微服务核心源码解析.pdf 的 幻灯片编号4、幻灯片编号5 就是关于关于补偿时间的解析

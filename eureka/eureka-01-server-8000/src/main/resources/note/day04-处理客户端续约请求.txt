@@ -1,0 +1,12 @@
+一、分别以debugger模式启动eureka-01-server-8000 服务端和eureka-02-provider-8081 客户端 服务器
+	查看启动情况：
+		http://localhost:8000/
+		http://localhost:8081/actuator/health
+
+二、InstanceResource.java类的 public Response renewLease( 方法里打上断点
+
+三、等待续约时间到来
+				
+四、debugger并进行查看
+
+五、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态

@@ -1,0 +1,11 @@
+一、debugger模式启动eureka-01-server-8000 服务端
+	查看启动情况：
+		http://localhost:8000/
+
+二、ApplicationResource.java类的public Response addInstance(InstanceInfo info, 方法里打上断点
+
+三、debugger模式启动eureka-02-provider-8081 客户端 服务器
+				
+四、debugger并进行查看
+
+五、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态
