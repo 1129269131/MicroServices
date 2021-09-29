@@ -5,8 +5,8 @@
 
 二、InstanceResource.java类的 public Response statusUpdate( 方法里打上断点
 
-三、使用postman访问如下接口（POST方式）
-	服务下线（PUT方式，无需请求头，无需请求体）：
+三、使用postman访问如下接口（PUT方式）
+	服务下线（无需请求头，无需请求体）：
 		http://localhost:8000/eureka/apps/ABCMSC-PROVIDER-DEPART/localhost:abcmsc-provider-depart:8081/status?value=OUT_OF_SERVICE
 			value=OUT_OF_SERVICE 或者 value=UP
 				

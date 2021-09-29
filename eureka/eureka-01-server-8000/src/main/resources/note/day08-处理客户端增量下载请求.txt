@@ -2,14 +2,16 @@
 
 二、ResponseCacheImpl.java类的 ResponseCacheImpl(EurekaServerConfig serverConfig, ServerCodecs serverCodecs, AbstractInstanceRegistry registry) { 构造器方法里打上断点（关注 this.readWriteCacheMap = 的赋值部分）
 
-三、debugger模式启动eureka-01-server-8000 服务端
+三、AbstractInstanceRegistry.java类的 private TimerTask getDeltaRetentionTask() { 方法里打上断点，包括run()方法
+
+四、debugger模式启动eureka-01-server-8000 服务端
 	查看启动情况：
 		http://localhost:8000/
 
-四、debugger模式启动eureka-02-provider-8081 客户端 服务器
+五、debugger模式启动eureka-02-provider-8081 客户端 服务器
 
-五、等待一段时间
+六、等待一段时间
 				
-六、debugger并进行查看
+七、debugger并进行查看
 
-七、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态
+八、查看eureka-02-provider-8081服务器运行状态和http://localhost:8000/ eureka中的Application的状态
