@@ -1,0 +1,5 @@
+一、NacosDiscoveryClient.java类的 return serviceDiscovery.getServices(); 处打上断点
+
+二、debugger模式启动nacos-01-provider-8081
+				
+三、debugger并进行查看

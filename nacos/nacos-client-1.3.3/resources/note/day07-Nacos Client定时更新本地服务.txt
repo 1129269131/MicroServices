@@ -1,0 +1,5 @@
+一、HostReactor.java类的 public ServiceInfo getServiceInfo(final String serviceName, final String clusters) { 方法里打上断点
+
+二、debugger模式启动nacos-01-provider-8081
+				
+三、debugger并进行查看

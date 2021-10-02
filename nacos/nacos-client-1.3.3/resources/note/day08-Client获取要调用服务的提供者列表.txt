@@ -1,0 +1,9 @@
+一、RibbonClientConfiguration.java类的 return new ZoneAwareLoadBalancer<>(config, rule, ping, serverList, 处打上断点
+
+二、ZoneAwareLoadBalancer.java类的 super(clientConfig, rule, ping, serverList, filter, serverListUpdater); 处打上断点
+
+三、debugger模式启动nacos-01-provider-8081、nacos-02-consumer-8080
+
+四、浏览器访问：http://localhost:8080/consumer/depart/get/3
+				
+五、debugger并进行查看

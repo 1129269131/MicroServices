@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: abcmsc-consumer-depart
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        # day01：默认为public
+        namespace: my_itdachang_id
+        # day01：默认为DEFAULT_GROUP
+        group: my_atguigu
+        # day01：默认为DEFAULT
+        cluster-name: myItdachangCluster
+
+
+
+
+
