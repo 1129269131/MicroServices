@@ -122,12 +122,12 @@ public class PushService implements ApplicationContextAware, ApplicationListener
         String serviceName = service.getName();
         String namespaceId = service.getNamespaceId();
 
-        // 启动一个定时操作，异步执行相关内容
+        // day15：启动一个定时操作，异步执行相关内容
         Future future = GlobalExecutor.scheduleUdpSender(() -> {
             try {
                 Loggers.PUSH.info(serviceName + " is changed, add it to push queue.");
-                // 从缓存map中获取当前服务的内层map，内层map中存放着当前服务的所有Nacos Client的
-                // UDP客户端PushClient
+                // day15：从缓存map中获取当前服务的内层map，内层map中存放着当前服务的所有Nacos Client的
+                // day15：UDP客户端PushClient
                 ConcurrentMap<String, PushClient> clients = clientMap
                         .get(UtilsAndCommons.assembleFullServiceName(namespaceId, serviceName));
                 if (MapUtils.isEmpty(clients)) {
@@ -135,14 +135,14 @@ public class PushService implements ApplicationContextAware, ApplicationListener
                 }
 
                 Map<String, Object> cache = new HashMap<>(16);
-                // 更新最后引用时间
+                // day15：更新最后引用时间
                 long lastRefTime = System.nanoTime();
-                // 遍历所有PushClient，向所有该服务的订阅者Nacos Client进行UDP推送
+                // day15：遍历所有PushClient，向所有该服务的订阅者Nacos Client进行UDP推送
                 for (PushClient client : clients.values()) {
-                    // 若当前PushClient为僵尸客户端
+                    // day15：若当前PushClient为僵尸客户端
                     if (client.zombie()) {
                         Loggers.PUSH.debug("client is zombie: " + client.toString());
-                        // 将该PushClient干掉
+                        // day15：将该PushClient干掉
                         clients.remove(client.toString());
                         Loggers.PUSH.debug("client is zombie: " + client.toString());
                         continue;
@@ -174,7 +174,7 @@ public class PushService implements ApplicationContextAware, ApplicationListener
                             client.getServiceName(), client.getAddrStr(), client.getAgent(),
                             (ackEntry == null ? null : ackEntry.key));
 
-                    // UDP通信
+                    // day15：UDP通信
                     udpPush(ackEntry);
                 }
             } catch (Exception e) {
@@ -213,10 +213,10 @@ public class PushService implements ApplicationContextAware, ApplicationListener
     public void addClient(String namespaceId, String serviceName, String clusters, String agent,
             InetSocketAddress socketAddr, DataSource dataSource, String tenant, String app) {
 
-        // 创建一个UDP Client
+        // day14：创建一个UDP Client
         PushClient client = new PushClient(namespaceId, serviceName, clusters, agent, socketAddr, dataSource, tenant,
                 app);
-        // 将这个UDP Client添加到缓存map
+        // day14：将这个UDP Client添加到缓存map
         addClient(client);
     }
 
@@ -228,22 +228,22 @@ public class PushService implements ApplicationContextAware, ApplicationListener
     public void addClient(PushClient client) {
         // client is stored by key 'serviceName' because notify event is driven by serviceName change
         String serviceKey = UtilsAndCommons.assembleFullServiceName(client.getNamespaceId(), client.getServiceName());
-        // clientMap是一个缓存map，用于存放当前Nacos Server中所有instance对应的UDP Client
-        // 其是一个双层map，外层map的key为  namespaceId##groupId@@微服务名称，value为内层map
-        // 内层map的key为代表一个instance的字符串，value为该instance对应的UDP Client，即PushClient
+        // day14：clientMap是一个缓存map，用于存放当前Nacos Server中所有instance对应的UDP Client
+        // day14：其是一个双层map，外层map的key为  namespaceId##groupId@@微服务名称，value为内层map
+        // day14：内层map的key为代表一个instance的字符串，value为该instance对应的UDP Client，即PushClient
         ConcurrentMap<String, PushClient> clients = clientMap.get(serviceKey);
-        // 若当前服务的内层map为null，则创建一个并放入到缓存map
+        // day14：若当前服务的内层map为null，则创建一个并放入到缓存map
         if (clients == null) {
             clientMap.putIfAbsent(serviceKey, new ConcurrentHashMap<>(1024));
             clients = clientMap.get(serviceKey);
         }
         PushClient oldClient = clients.get(client.toString());
-        // 从内层map中获取当前instance对应的的PushClient，
-        // 若该PushClient不为null，则更新一个最后引用时间戳;
-        // 若该PushClient为null，则将当前这个PushClient作为PushClient
-        // 写入到内层map，即写入到了缓存map
+        // day14：从内层map中获取当前instance对应的的PushClient，
+        // day14：若该PushClient不为null，则更新一个最后引用时间戳;
+        // day14：若该PushClient为null，则将当前这个PushClient作为PushClient
+        // day14：写入到内层map，即写入到了缓存map
         if (oldClient != null) {
-            // 更新最后引用时间戳
+            // day14：更新最后引用时间戳
             oldClient.refresh();
         } else {
             PushClient res = clients.putIfAbsent(client.toString(), client);
@@ -394,7 +394,7 @@ public class PushService implements ApplicationContextAware, ApplicationListener
                 .containsKey(UtilsAndCommons.assembleFullServiceName(service.getNamespaceId(), service.getName()))) {
             return;
         }
-        // 发布服务变更事件
+        // day13：发布服务变更事件
         this.applicationContext.publishEvent(new ServiceChangeEvent(this, service));
     }
 
@@ -611,17 +611,17 @@ public class PushService implements ApplicationContextAware, ApplicationListener
             return null;
         }
 
-        // 若UDP通信重试次数超出了最大阈值，则将该UDP通信从两个缓存map中干掉
+        // day15：若UDP通信重试次数超出了最大阈值，则将该UDP通信从两个缓存map中干掉
         if (ackEntry.getRetryTimes() > MAX_RETRY_TIMES) {
             Loggers.PUSH.warn("max re-push times reached, retry times {}, key: {}", ackEntry.retryTimes, ackEntry.key);
             ackMap.remove(ackEntry.key);
             udpSendTimeMap.remove(ackEntry.key);
-            failedPush += 1;  // 失败计数器加一
+            failedPush += 1;  // day15：失败计数器加一
             return ackEntry;
         }
 
         try {
-            // 计数器加一
+            // day15：计数器加一
             if (!ackMap.containsKey(ackEntry.key)) {
                 totalPush++;
             }
@@ -629,12 +629,12 @@ public class PushService implements ApplicationContextAware, ApplicationListener
             udpSendTimeMap.put(ackEntry.key, System.currentTimeMillis());
 
             Loggers.PUSH.info("send udp packet: " + ackEntry.key);
-            // 发送UDP
+            // day15：发送UDP
             udpSocket.send(ackEntry.origin);
 
             ackEntry.increaseRetryTime();
 
-            // 开启定时任务，进行UPD通信失败后的重新推送
+            // day15：开启定时任务，进行UDP通信失败后的重新推送
             GlobalExecutor.scheduleRetransmitter(new Retransmitter(ackEntry),
                     TimeUnit.NANOSECONDS.toMillis(ACK_TIMEOUT_NANOS), TimeUnit.MILLISECONDS);
 

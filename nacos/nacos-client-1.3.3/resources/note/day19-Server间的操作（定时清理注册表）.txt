@@ -1,0 +1,11 @@
+相关配置：
+    nacos-client-1.3.3 --》console[nacos-console] --》application.properties：
+        nacos.naming.empty-service.auto-clean=true
+        nacos.naming.empty-service.clean.initial-delay-ms=50000
+        nacos.naming.empty-service.clean.period-time-ms=30000
+
+一、ServiceManager.java类的 GlobalExecutor.scheduleServiceAutoClean(new EmptyServiceAutoClean(), cleanEmptyServiceDelay, 处打上断点
+
+二、debugger模式启动nacos-01-provider-8081
+
+三、debugger并进行查看

@@ -51,7 +51,6 @@ public class ServerStatusSynchronizer implements Synchronizer {
         }
 
         try {
-            // 调用Nacos自研的HttpClient发送请求
             HttpClient.asyncHttpGet(url, null, params, new Callback<String>() {
                 @Override
                 public void onReceive(RestResult<String> result) {

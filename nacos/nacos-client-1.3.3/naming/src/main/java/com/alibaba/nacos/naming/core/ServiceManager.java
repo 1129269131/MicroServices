@@ -114,11 +114,11 @@ public class ServiceManager implements RecordListener<Service> {
      */
     @PostConstruct
     public void init() {
-        // 启动了一个定时任务：每60s当前Server会向其它Nacos Server发送一次本机注册表
-        // 本机注册表是以各个服务的checksum(字串拼接)形式被发送的
+        // day17：启动了一个定时任务：每60s当前Server会向其它Nacos Server发送一次本机注册表
+        // day17：本机注册表是以各个服务的checksum(字串拼接)形式被发送的
         GlobalExecutor.scheduleServiceReporter(new ServiceReporter(), 60000, TimeUnit.MILLISECONDS);
 
-        // 从其它Nacos Server获取到注册表中的所有instance的最新状态并更新到本地注册表
+        // day18：从其它Nacos Server获取到注册表中的所有instance的最新状态并更新到本地注册表
         GlobalExecutor.submitServiceUpdateManager(new UpdatedServiceProcessor());
 
         if (emptyServiceAutoClean) {
@@ -132,8 +132,8 @@ public class ServiceManager implements RecordListener<Service> {
             // the possibility that the service cache information may just be deleted
             // and then created due to the heartbeat mechanism
 
-            // 启动了一个定时任务：每30s清理一次注册表中的空service
-            // 空service，即没有任何instance的service
+            // day19：启动了一个定时任务：每30s清理一次注册表中的空service
+            // day19：空service，即没有任何instance的service
             GlobalExecutor.scheduleServiceAutoClean(new EmptyServiceAutoClean(), cleanEmptyServiceDelay,
                     cleanEmptyServicePeriod);
         }
@@ -243,11 +243,11 @@ public class ServiceManager implements RecordListener<Service> {
             ServiceKey serviceKey = null;
 
             try {
-                // 运行一个无限循环
+                // day18：运行一个无限循环
                 while (true) {
                     try {
-                        // 从队列中取出一个元素
-                        // toBeUpdatedServicesQueue 中存放的是来自于其它Server的服务状态发生变更的服务
+                        // day18：从队列中取出一个元素
+                        // day18：toBeUpdatedServicesQueue 中存放的是来自于其它Server的服务状态发生变更的服务
                         serviceKey = toBeUpdatedServicesQueue.take();
                     } catch (Exception e) {
                         Loggers.EVT_LOG.error("[UPDATE-DOMAIN] Exception while taking item from LinkedBlockingDeque.");
@@ -256,7 +256,7 @@ public class ServiceManager implements RecordListener<Service> {
                     if (serviceKey == null) {
                         continue;
                     }
-                    // 另外启用一个线程来完成ServiceUpdater任务
+                    // day18：另外启用一个线程来完成ServiceUpdater任务
                     GlobalExecutor.submitServiceUpdate(new ServiceUpdater(serviceKey));
                 }
             } catch (Exception e) {
@@ -371,10 +371,10 @@ public class ServiceManager implements RecordListener<Service> {
     public Map<String, Set<String>> getAllServiceNames() {
 
         Map<String, Set<String>> namesMap = new HashMap<>(16);
-        // 遍历注册表
+        // day17：遍历注册表
         for (String namespaceId : serviceMap.keySet()) {
-            // serviceMap.get(namespaceId) 是注册表的内层map，
-            // 其keySet即为所有服务名称(groupId@@微服务名称)
+            // day17：serviceMap.get(namespaceId) 是注册表的内层map，
+            // day17：其keySet即为所有服务名称(groupId@@微服务名称)
             namesMap.put(namespaceId, serviceMap.get(namespaceId).keySet());
         }
         return namesMap;
@@ -445,13 +445,13 @@ public class ServiceManager implements RecordListener<Service> {
             throw new IllegalArgumentException("specified service not exist, serviceName : " + serviceName);
         }
 
-        // 通过同步服务实现服务的删除
-        // 就是会对nacos集合中所有server执行删除操作
+        // day19：通过同步服务实现服务的删除
+        // day19：就是会对nacos集合中所有server执行删除操作
         consistencyService.remove(KeyBuilder.buildServiceMetaKey(namespaceId, serviceName));
     }
 
     public void addOrReplaceService(Service service) throws NacosException {
-        // 将这个service同步到其它nacos server
+        // day11：将这个service同步到其它nacos server
         consistencyService.put(KeyBuilder.buildServiceMetaKey(service.getNamespaceId(), service.getName()), service);
     }
 
@@ -493,9 +493,9 @@ public class ServiceManager implements RecordListener<Service> {
             }
             service.validate();
 
-            // 将service写入到注册表
+            // day11：将service写入到注册表
             putServiceAndInit(service);
-            // 对持久实例的操作
+            // day11：对持久实例的操作
             if (!local) {
                 addOrReplaceService(service);
             }
@@ -514,17 +514,17 @@ public class ServiceManager implements RecordListener<Service> {
      */
     public void registerInstance(String namespaceId, String serviceName, Instance instance) throws NacosException {
 
-        // 创建一个空service，
-        // 注意，第三个参数为true，表示 临时实例
+        // day11：创建一个空service，
+        // day11：注意，第三个参数为true，表示 临时实例
         createEmptyService(namespaceId, serviceName, instance.isEphemeral());
-        // 从注册表中获取到service
+        // day11：从注册表中获取到service
         Service service = getService(namespaceId, serviceName);
 
         if (service == null) {
             throw new NacosException(NacosException.INVALID_PARAM,
                     "service not found, namespace: " + namespaceId + ", service: " + serviceName);
         }
-        // 将instance写入到service，即写入到了注册表
+        // day11：将instance写入到service，即写入到了注册表
         addInstance(namespaceId, serviceName, instance.isEphemeral(), instance);
     }
 
@@ -565,16 +565,16 @@ public class ServiceManager implements RecordListener<Service> {
             throws NacosException {
 
         String key = KeyBuilder.buildInstanceListKey(namespaceId, serviceName, ephemeral);
-        // 从注册表中获取service
+        // day11：从注册表中获取service
         Service service = getService(namespaceId, serviceName);
 
         synchronized (service) {
-            // 将要注册的instance写入到service，即写入到了注册表
+            // day11：将要注册的instance写入到service，即写入到了注册表
             List<Instance> instanceList = addIpAddresses(service, ephemeral, ips);
 
             Instances instances = new Instances();
             instances.setInstanceList(instanceList);
-            // 将本次变更同步给其它Nacos
+            // day11：将本次变更同步给其它Nacos
             consistencyService.put(key, instances);
         }
     }
@@ -590,11 +590,11 @@ public class ServiceManager implements RecordListener<Service> {
      */
     public void removeInstance(String namespaceId, String serviceName, boolean ephemeral, Instance... ips)
             throws NacosException {
-        // 从注册表获取当前service
+        // day12：从注册表获取当前service
         Service service = getService(namespaceId, serviceName);
 
         synchronized (service) {
-            // 删除
+            // day12：删除
             removeInstance(namespaceId, serviceName, ephemeral, service, ips);
         }
     }
@@ -604,13 +604,13 @@ public class ServiceManager implements RecordListener<Service> {
 
         String key = KeyBuilder.buildInstanceListKey(namespaceId, serviceName, ephemeral);
 
-        // 从注册表中删除instance
+        // day12：从注册表中删除instance
         List<Instance> instanceList = substractIpAddresses(service, ephemeral, ips);
 
         Instances instances = new Instances();
         instances.setInstanceList(instanceList);
 
-        // 将本次变更同步给其它nacos
+        // day12：将本次变更同步给其它nacos
         consistencyService.put(key, instances);
     }
 
@@ -650,36 +650,36 @@ public class ServiceManager implements RecordListener<Service> {
     public List<Instance> updateIpAddresses(Service service, String action, boolean ephemeral, Instance... ips)
             throws NacosException {
 
-        // 从其它nacos获取当前服务数据（临时实例数据）
+        // day11：从其它nacos获取当前服务数据（临时实例数据）
         Datum datum = consistencyService
                 .get(KeyBuilder.buildInstanceListKey(service.getNamespaceId(), service.getName(), ephemeral));
 
-        // 获取本地注册表中当前服务的所有临时实例
+        // day11：获取本地注册表中当前服务的所有临时实例
         List<Instance> currentIPs = service.allIPs(ephemeral);
         Map<String, Instance> currentInstances = new HashMap<>(currentIPs.size());
         Set<String> currentInstanceIds = Sets.newHashSet();
 
-        // 遍历注册表中获取到的实例
+        // day11：遍历注册表中获取到的实例
         for (Instance instance : currentIPs) {
-            // 将当前遍历的instance写入到map，key为ip:port，value为instance
+            // day11：将当前遍历的instance写入到map，key为ip:port，value为instance
             currentInstances.put(instance.toIpAddr(), instance);
-            // 将当前遍历的instanceId写入到一个set
+            // day11：将当前遍历的instanceId写入到一个set
             currentInstanceIds.add(instance.getInstanceId());
         }
 
         Map<String, Instance> instanceMap;
         if (datum != null) {
-            // 将注册表中主机的instance数据替换掉外来的相同主机的instance数据
+            // day11：将注册表中主机的instance数据替换掉外来的相同主机的instance数据
             instanceMap = setValid(((Instances) datum.value).getInstanceList(), currentInstances);
         } else {
             instanceMap = new HashMap<>(ips.length);
         }
 
         for (Instance instance : ips) {
-            // 若当前service中不包含当前要注册的instance所属cluster，则创建一个
+            // day11：若当前service中不包含当前要注册的instance所属cluster，则创建一个
             if (!service.getClusterMap().containsKey(instance.getClusterName())) {
                 Cluster cluster = new Cluster(instance.getClusterName(), service);
-                // 初始化cluster的健康检测任务
+                // day11：初始化cluster的健康检测任务
                 cluster.init();
                 service.getClusterMap().put(instance.getClusterName(), cluster);
                 Loggers.SRV_LOG
@@ -687,8 +687,8 @@ public class ServiceManager implements RecordListener<Service> {
                                 instance.getClusterName(), instance.toJson());
             }
 
-            // 若当前操作为清除操作，则将当前instance从instanceMap中清除，
-            // 否则就是添加操作，即将当前instance添加到instanceMap中
+            // day11：若当前操作为清除操作，则将当前instance从instanceMap中清除，
+            // day11：否则就是添加操作，即将当前instance添加到instanceMap中
             if (UtilsAndCommons.UPDATE_INSTANCE_ACTION_REMOVE.equals(action)) {
                 instanceMap.remove(instance.getDatumKey());
             } else {
@@ -713,18 +713,18 @@ public class ServiceManager implements RecordListener<Service> {
     }
 
     private List<Instance> addIpAddresses(Service service, boolean ephemeral, Instance... ips) throws NacosException {
-        // 修改当前service的instance列表，这个修改一共有两种操作：
-        // 添加实例  与  删除实例
+        // day11：修改当前service的instance列表，这个修改一共有两种操作：
+        // day11：添加实例  与  删除实例
         return updateIpAddresses(service, UtilsAndCommons.UPDATE_INSTANCE_ACTION_ADD, ephemeral, ips);
     }
 
     private Map<String, Instance> setValid(List<Instance> oldInstances, Map<String, Instance> map) {
 
         Map<String, Instance> instanceMap = new HashMap<>(oldInstances.size());
-        // 遍历外来的instance集合
+        // day11：遍历外来的instance集合
         for (Instance instance : oldInstances) {
-            // 从注册表包含的instance中若可以找到当前遍历的instance,
-            // 则将注册表中该主机的instance数据替换掉外来的数据
+            // day11：从注册表包含的instance中若可以找到当前遍历的instance,
+            // day11：则将注册表中该主机的instance数据替换掉外来的数据
             Instance instance1 = map.get(instance.toIpAddr());
             if (instance1 != null) {
                 instance.setHealthy(instance1.isHealthy());
@@ -752,7 +752,7 @@ public class ServiceManager implements RecordListener<Service> {
      * @param service service
      */
     public void putService(Service service) {
-        // 双重检测锁机制  Double Check Lock，DCL
+        // day11：双重检测锁机制  Double Check Lock，DCL
         if (!serviceMap.containsKey(service.getNamespaceId())) {
             synchronized (putServiceLock) {
                 if (!serviceMap.containsKey(service.getNamespaceId())) {
@@ -760,16 +760,16 @@ public class ServiceManager implements RecordListener<Service> {
                 }
             }
         }
-        // 写入到注册表map
+        // day11：写入到注册表map
         serviceMap.get(service.getNamespaceId()).put(service.getName(), service);
     }
 
     private void putServiceAndInit(Service service) throws NacosException {
-        // 将service写入注册表
+        // day11：将service写入注册表
         putService(service);
-        // 初始化service内部健康检测任务
+        // day11：初始化service内部健康检测任务
         service.init();
-        // 给nacos集合中的当前服务的持久实例、临时实例添加监听
+        // day11：给nacos集合中的当前服务的持久实例、临时实例添加监听
         consistencyService
                 .listen(KeyBuilder.buildInstanceListKey(service.getNamespaceId(), service.getName(), true), service);
         consistencyService
@@ -891,8 +891,8 @@ public class ServiceManager implements RecordListener<Service> {
 
         public String namespaceId;
 
-        // key为服务名称(groupId@@微服务名称)，
-        // value为该服务对应的checksum
+        // day17：key为服务名称(groupId@@微服务名称)，
+        // day17：value为该服务对应的checksum
         public Map<String, String> serviceName2Checksum = new HashMap<String, String>();
 
         public ServiceChecksum() {
@@ -926,29 +926,29 @@ public class ServiceManager implements RecordListener<Service> {
 
             // Parallel flow opening threshold
 
-            // 这是一个并行流开启阈值：当一个namespace中包含的service的数量超过100时，
-            // 会将注册创建为一个并行流，否则就是一个串行流
+            // day19：这是一个并行流开启阈值：当一个namespace中包含的service的数量超过100时，
+            // day19：会将注册表创建为一个并行流，否则就是一个串行流
             int parallelSize = 100;
 
-            // 遍历注册表
-            // stringServiceMap 就是注册表的内层map
+            // day19：遍历注册表
+            // day19：stringServiceMap 就是注册表的内层map
             serviceMap.forEach((namespace, stringServiceMap) -> {
                 Stream<Map.Entry<String, Service>> stream = null;
-                // 若当前遍历的元素(namespace)中包含的服务的数量超出了阈值，
-                // 则生成一个并行流
+                // day19：若当前遍历的元素(namespace)中包含的服务的数量超出了阈值，
+                // day19：则生成一个并行流
                 if (stringServiceMap.size() > parallelSize) {
-                    // 并行流
+                    // day19：并行流
                     stream = stringServiceMap.entrySet().parallelStream();
                 } else {
-                    // 串行流
+                    // day19：串行流
                     stream = stringServiceMap.entrySet().stream();
                 }
                 stream.filter(entry -> {
                     final String serviceName = entry.getKey();
-                    // 只要当前遍历的服务需要当前server负责，则通过过滤
+                    // day19：只要当前遍历的服务需要当前server负责，则通过过滤
                     return distroMapper.responsible(serviceName);
 
-                    // 这里的forEach遍历的元素一定是最终需要由当前server处理的服务
+                    // day19：这里的forEach遍历的元素一定是最终需要由当前server处理的服务
                 }).forEach(entry -> stringServiceMap.computeIfPresent(entry.getKey(), (serviceName, service) -> {
                     if (service.isEmpty()) {
 
@@ -956,12 +956,12 @@ public class ServiceManager implements RecordListener<Service> {
                         // experiences Empty is determined by finalizeCnt, and if the specified
                         // value is reached, it is removed
 
-                        // 若当前服务为空的次数超出了最大允许值，则删除这个服务
+                        // day19：若当前服务为空的次数超出了最大允许值，则删除这个服务
                         if (service.getFinalizeCount() > maxFinalizeCount) {
                             Loggers.SRV_LOG.warn("namespace : {}, [{}] services are automatically cleaned", namespace,
                                     serviceName);
                             try {
-                                // 删除服务
+                                // day19：删除服务
                                 easyRemoveService(namespace, serviceName);
                             } catch (Exception e) {
                                 Loggers.SRV_LOG.error("namespace : {}, [{}] services are automatically clean has "
@@ -976,7 +976,7 @@ public class ServiceManager implements RecordListener<Service> {
                                                 + "an empty instance is : {}", namespace, serviceName,
                                         service.getFinalizeCount());
                     } else {
-                        // 将计数器归零
+                        // day19：将计数器归零
                         service.setFinalizeCount(0);
                     }
                     return service;
@@ -991,9 +991,9 @@ public class ServiceManager implements RecordListener<Service> {
         public void run() {
             try {
 
-                // map的key为namespaceId，value为一个Set集合，集合中存放的是当前
-                // namespace中所有service的名称
-                // 这个map中存放的是当前注册表中所有服务的名称
+                // day17：map的key为namespaceId，value为一个Set集合，集合中存放的是当前
+                // day17：namespace中所有service的名称
+                // day17：这个map中存放的是当前注册表中所有服务的名称
                 Map<String, Set<String>> allServiceNames = getAllServiceNames();
 
                 if (allServiceNames.size() <= 0) {
@@ -1001,57 +1001,57 @@ public class ServiceManager implements RecordListener<Service> {
                     return;
                 }
 
-                // 遍历所有的namespace
+                // day17：遍历所有的namespace
                 for (String namespaceId : allServiceNames.keySet()) {
 
                     ServiceChecksum checksum = new ServiceChecksum(namespaceId);
 
-                    // 遍历当前namespace中的所有服务名称
+                    // day17：遍历当前namespace中的所有服务名称
                     for (String serviceName : allServiceNames.get(namespaceId)) {
-                        // 若当前服务不归当前Server负责，则直接跳过
+                        // day17：若当前服务不归当前Server负责，则直接跳过
                         if (!distroMapper.responsible(serviceName)) {
                             continue;
                         }
 
-                        // 从注册表中获取到当前遍历的服务
+                        // day17：从注册表中获取到当前遍历的服务
                         Service service = getService(namespaceId, serviceName);
 
                         if (service == null || service.isEmpty()) {
                             continue;
                         }
-                        // 重新计算当前service的checksum
+                        // day17：重新计算当前service的checksum
                         service.recalculateChecksum();
-                        // 将计算好的checksum写入到map
+                        // day17：将计算好的checksum写入到map
                         checksum.addItem(serviceName, service.getChecksum());
-                    }  // end-内层for
+                    }  // day17：end-内层for
 
                     Message msg = new Message();
 
-                    // 将当前namespace中的所有服务的checksum写入到msg中，
-                    // 将来将msg发送给其它nacos
+                    // day17：将当前namespace中的所有服务的checksum写入到msg中，
+                    // day17：将来将msg发送给其它nacos
                     msg.setData(JacksonUtils.toJson(checksum));
 
-                    // 获取到所有nacos
+                    // day17：获取到所有nacos
                     Collection<Member> sameSiteServers = memberManager.allMembers();
 
                     if (sameSiteServers == null || sameSiteServers.size() <= 0) {
                         return;
                     }
 
-                    // 遍历所有nacos，要将msg发送出去
+                    // day17：遍历所有nacos，要将msg发送出去
                     for (Member server : sameSiteServers) {
-                        // 若当前遍历的server是当前server，则直接跳过
+                        // day17：若当前遍历的server是当前server，则直接跳过
                         if (server.getAddress().equals(NetUtils.localServer())) {
                             continue;
                         }
-                        // 将msg发送给当前遍历的server
+                        // day17：将msg发送给当前遍历的server
                         synchronizer.send(server.getAddress(), msg);
                     }
-                }  // end-外层for
+                }  // day17：end-外层for
             } catch (Exception e) {
                 Loggers.SRV_LOG.error("[DOMAIN-STATUS] Exception while sending service status", e);
             } finally {
-                // 开启下一次定时执行
+                // day17：开启下一次定时执行
                 GlobalExecutor.scheduleServiceReporter(this, switchDomain.getServiceStatusSynchronizationPeriodMillis(),
                         TimeUnit.MILLISECONDS);
             }

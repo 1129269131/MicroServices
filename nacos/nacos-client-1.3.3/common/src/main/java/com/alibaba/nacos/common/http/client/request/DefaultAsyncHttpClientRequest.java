@@ -49,9 +49,9 @@ public class DefaultAsyncHttpClientRequest implements AsyncHttpClientRequest {
     public <T> void execute(URI uri, String httpMethod, RequestHttpEntity requestHttpEntity, final ResponseHandler<T> responseHandler,
             final Callback<T> callback) throws Exception {
         HttpRequestBase httpRequestBase = DefaultHttpClientRequest.build(uri, httpMethod, requestHttpEntity);
-        // 调用Apache的Http异步Client完成请求的提交
+        // day12：调用Apache的Http异步Client完成请求的提交
         asyncClient.execute(httpRequestBase, new FutureCallback<HttpResponse>() {
-            // 请求获取到响应后会触发该回调方法的执行
+            // day12：请求获取到响应后会触发该回调方法的执行
             @Override
             public void completed(HttpResponse result) {
                 DefaultClientHttpResponse response = new DefaultClientHttpResponse(result);

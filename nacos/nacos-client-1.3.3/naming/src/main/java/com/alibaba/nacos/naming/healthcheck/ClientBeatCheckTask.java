@@ -71,32 +71,32 @@ public class ClientBeatCheckTask implements Runnable {
         return KeyBuilder.buildServiceMetaKey(service.getNamespaceId(), service.getName());
     }
 
-    // 用于清除过期instance
+    // day11：用于清除过期instance
     @Override
     public void run() {
         try {
-            // 若当前service不用当前Server负责，则直接结束
+            // day11：若当前service不用当前Server负责，则直接结束
             if (!getDistroMapper().responsible(service.getName())) {
                 return;
             }
 
-            // 若当前服务没有开启检测检测功能，则直接结束
+            // day11：若当前服务没有开启健康检测功能，则直接结束
             if (!getSwitchDomain().isHealthCheckEnabled()) {
                 return;
             }
 
-            // 获取当前服务的所有临时实例
+            // day11：获取当前服务的所有临时实例
             List<Instance> instances = service.allIPs(true);
 
             // first set health status of instances:
-            // 遍历当前服务的所有临时实例
+            // day11：遍历当前服务的所有临时实例
             for (Instance instance : instances) {
-                // 若当前时间距离上次心跳时间已经超过了15s，则将当前instance状态设置为不健康
+                // 若day11：当前时间距离上次心跳时间已经超过了15s，则将当前instance状态设置为不健康
                 if (System.currentTimeMillis() - instance.getLastBeat() > instance.getInstanceHeartBeatTimeOut()) {
-                    // 若instance的marked属性不为true，则当前instance可能是临时实例
-                    // marked属性若为true，则instance一定为持久实例
+                    // day11：若instance的marked属性不为true，则当前instance可能是临时实例
+                    // day11：marked属性若为true，则instance一定为持久实例
                     if (!instance.isMarked()) {
-                        // 将healthy状态设置为false
+                        // day11：将healthy状态设置为false
                         if (instance.isHealthy()) {
                             instance.setHealthy(false);
                             Loggers.EVT_LOG
@@ -104,7 +104,7 @@ public class ClientBeatCheckTask implements Runnable {
                                             instance.getIp(), instance.getPort(), instance.getClusterName(),
                                             service.getName(), UtilsAndCommons.LOCALHOST_SITE,
                                             instance.getInstanceHeartBeatTimeOut(), instance.getLastBeat());
-                            // 发布状态变更事件
+                            // day11：发布状态变更事件
                             getPushService().serviceChanged(service);
                             ApplicationUtils.publishEvent(new InstanceHeartbeatTimeoutEvent(this, instance));
                         }
@@ -144,19 +144,19 @@ public class ClientBeatCheckTask implements Runnable {
     private void deleteIp(Instance instance) {
 
         try {
-            // 构建并初始化一个request
+            // day12：构建并初始化一个request
             NamingProxy.Request request = NamingProxy.Request.newRequest();
             request.appendParam("ip", instance.getIp()).appendParam("port", String.valueOf(instance.getPort()))
                     .appendParam("ephemeral", "true").appendParam("clusterName", instance.getClusterName())
                     .appendParam("serviceName", service.getName()).appendParam("namespaceId", service.getNamespaceId());
 
-            // 构建一个访问自己的请求url
+            // day12：构建一个访问自己的请求url
             String url = "http://127.0.0.1:" + ApplicationUtils.getPort() + ApplicationUtils.getContextPath()
                     + UtilsAndCommons.NACOS_NAMING_CONTEXT + "/instance?" + request.toUrl();
 
             // delete instance asynchronously:
-            // 调用 Nacos 自研的HttpClient完成Server间的请求提交，
-            // 该HttpClient是对Apache的Http异步Client的封装
+            // day12：调用 Nacos 自研的HttpClient完成Server间的请求提交，
+            // day12：该HttpClient是对Apache的Http异步Client的封装
             HttpClient.asyncHttpDelete(url, null, null, new Callback<String>() {
                 @Override
                 public void onReceive(RestResult<String> result) {

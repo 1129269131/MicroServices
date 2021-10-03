@@ -52,7 +52,7 @@ public class ServiceStatusSynchronizer implements Synchronizer {
         }
 
         try {
-            // 使用Nacos自研的HttpClient发送一个POST请求
+            // day17：使用Nacos自研的HttpClient发送一个POST请求
             HttpClient.asyncHttpPostLarge(url, null, JacksonUtils.toJson(params), new Callback<String>() {
                 @Override
                 public void onReceive(RestResult<String> result) {

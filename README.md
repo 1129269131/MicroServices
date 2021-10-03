@@ -15,6 +15,6 @@
 		密码：nacos
 		
 		注：
-			复习说明：
-				nacos-01-provider-8081、nacos-02-consumer-8080（debugger+解析图+微服务注册中心.pdf）
-				nacos-client-1.3.3（代码注释说明+微服务注册中心.pdf）
+			复习说明（1，2结合着复习）：
+				1、nacos-01-provider-8081、nacos-02-consumer-8080（debugger+解析图+微服务注册中心.pdf）
+				2、nacos-client-1.3.3（代码注释说明+微服务注册中心.pdf）

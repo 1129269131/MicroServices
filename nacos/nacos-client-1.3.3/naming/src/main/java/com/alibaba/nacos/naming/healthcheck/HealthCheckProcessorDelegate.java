@@ -53,7 +53,7 @@ public class HealthCheckProcessorDelegate implements HealthCheckProcessor {
         if (processor == null) {
             processor = healthCheckProcessorMap.get(NoneHealthCheckProcessor.TYPE);
         }
-        // 处理任务
+        // day11：处理任务
         processor.process(task);
     }
 

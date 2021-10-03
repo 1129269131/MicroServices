@@ -129,11 +129,11 @@ public class Service extends com.alibaba.nacos.api.naming.pojo.Service implement
      * @param rsInfo metrics info of server
      */
     public void processClientBeat(final RsInfo rsInfo) {
-        // 创建一个处理器，其是一个任务
+        // day13：创建一个处理器，其是一个任务
         ClientBeatProcessor clientBeatProcessor = new ClientBeatProcessor();
         clientBeatProcessor.setService(this);
         clientBeatProcessor.setRsInfo(rsInfo);
-        // 开启一个立即执行的任务，即执行clientBeatProcessor任务的run()
+        // day13：开启一个立即执行的任务，即执行clientBeatProcessor任务的run()
         HealthCheckReactor.scheduleNow(clientBeatProcessor);
     }
 
@@ -297,14 +297,14 @@ public class Service extends com.alibaba.nacos.api.naming.pojo.Service implement
      * Init service.
      */
     public void init() {
-        // 开启定时清除过期instance任务
+        // day11：开启定时清除过期instance任务
         HealthCheckReactor.scheduleCheck(clientBeatCheckTask);
-        // 开启了当前service所包含的所有cluster的健康检测任务
+        // day11：开启了当前service所包含的所有cluster的健康检测任务
         for (Map.Entry<String, Cluster> entry : clusterMap.entrySet()) {
             entry.getValue().setService(this);
-            // 开启当前遍历cluster的健康检测任务：
-            // 将当前cluster包含的所有instance的心跳检测任务定时添加到一个任务队列
-            // taskQueue，即将当前cluster所包含的持久实例的心跳任务添加到taskQueue
+            // day11：开启当前遍历cluster的健康检测任务：
+            // day11：将当前cluster包含的所有instance的心跳检测任务定时添加到一个任务队列
+            // day11：taskQueue，即将当前cluster所包含的持久实例的心跳任务添加到taskQueue
             entry.getValue().init();
         }
     }
@@ -380,8 +380,8 @@ public class Service extends com.alibaba.nacos.api.naming.pojo.Service implement
             if (clusterObj == null) {
                 continue;
             }
-            // 将当前遍历cluster的所有instance添加到result集合
-            // 包含所有持久实例与临时实例
+            // day14：将当前遍历cluster的所有instance添加到result集合
+            // day14：包含所有持久实例与临时实例
             result.addAll(clusterObj.allIPs());
         }
         return result;
@@ -398,7 +398,7 @@ public class Service extends com.alibaba.nacos.api.naming.pojo.Service implement
             clusters = new ArrayList<>();
             clusters.addAll(clusterMap.keySet());
         }
-        // 获取到当前服务的所有cluster中的所有instance
+        // day14：获取到当前服务的所有cluster中的所有instance
         return allIPs(clusters);
     }
 

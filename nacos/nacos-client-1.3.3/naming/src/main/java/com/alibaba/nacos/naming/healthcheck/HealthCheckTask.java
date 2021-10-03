@@ -79,7 +79,7 @@ public class HealthCheckTask implements Runnable {
         try {
             if (distroMapper.responsible(cluster.getService().getName()) && switchDomain
                     .isHealthCheckEnabled(cluster.getService().getName())) {
-                // 处理该任务
+                // day11：处理该任务
                 healthCheckProcessor.process(this);
                 if (Loggers.EVT_LOG.isDebugEnabled()) {
                     Loggers.EVT_LOG
@@ -92,7 +92,7 @@ public class HealthCheckTask implements Runnable {
                             cluster.getName(), e);
         } finally {
             if (!cancelled) {
-                // 开启下一次任务
+                // day11：开启下一次任务
                 HealthCheckReactor.scheduleCheck(this);
 
                 // worst == 0 means never checked
