@@ -13,3 +13,8 @@
 		访问地址：127.0.0.1:8848/nacos
 		账号：nacos
 		密码：nacos
+		
+		注：
+			复习说明：
+				nacos-01-provider-8081、nacos-02-consumer-8080（debugger+解析图+微服务注册中心.pdf）
+				nacos-client-1.3.3（代码注释说明+微服务注册中心.pdf）

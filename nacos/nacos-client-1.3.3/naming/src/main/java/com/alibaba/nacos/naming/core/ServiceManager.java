@@ -63,7 +63,7 @@ public class ServiceManager implements RecordListener<Service> {
      */
     // day10：Server端注册表，是一个双层map，
     // day10：外层map的key为namespaceId，value为内层map
-    // day10：内层map的keygroup::serviceName，value为Service
+    // day10：内层map的key为group::serviceName，value为Service
     private final Map<String, Map<String, Service>> serviceMap = new ConcurrentHashMap<>();
 
     private final LinkedBlockingDeque<ServiceKey> toBeUpdatedServicesQueue = new LinkedBlockingDeque<>(1024 * 1024);
