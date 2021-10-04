@@ -6,7 +6,7 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         # day01：默认为public
-        namespace: my_itdachang_id
+        namespace: 6d7a1cf1-01ff-4b53-a2c7-7e836d268492
         # day01：默认为DEFAULT_GROUP
         group: my_atguigu
         # day01：默认为DEFAULT

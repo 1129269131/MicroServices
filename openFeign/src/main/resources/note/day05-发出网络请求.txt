@@ -1,0 +1,7 @@
+一、ReflectiveFeign.java类的 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable { 方法里打上断点
+
+二、debugger模式启动启动 nacos-03-consumer-feign-8080
+
+三、浏览器访问：http://localhost:8080/consumer/depart/get/3
+				
+四、debugger并进行查看

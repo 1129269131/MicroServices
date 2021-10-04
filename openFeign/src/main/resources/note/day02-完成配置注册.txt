@@ -1,0 +1,5 @@
+一、FeignClientsRegistrar.java类的 public void registerBeanDefinitions(AnnotationMetadata metadata, 方法里打上断点
+
+二、debugger模式启动 nacos-03-consumer-feign-8080
+				
+三、debugger并进行查看
