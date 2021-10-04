@@ -471,10 +471,10 @@ public class ServiceManager implements RecordListener<Service> {
      */
     public void createServiceIfAbsent(String namespaceId, String serviceName, boolean local, Cluster cluster)
             throws NacosException {
-        // 从注册表中获取service
+        // day11：从注册表中获取service
         Service service = getService(namespaceId, serviceName);
-        // 若当前注册instance是其提供服务的第一个实例，则注册表中是没有该service的，
-        // 此时会创建一个service实例
+        // day11：若当前注册instance是其提供服务的第一个实例，则注册表中是没有该service的，
+        // day11：此时会创建一个service实例
         if (service == null) {
 
             Loggers.SRV_LOG.info("creating empty service {}:{}", namespaceId, serviceName);
@@ -484,10 +484,10 @@ public class ServiceManager implements RecordListener<Service> {
             service.setGroupName(NamingUtils.getGroupName(serviceName));
             // now validate the service. if failed, exception will be thrown
             service.setLastModifiedMillis(System.currentTimeMillis());
-            // 重新计算校验和
+            // day11：重新计算校验和
             service.recalculateChecksum();
             if (cluster != null) {
-                // cluster与service建立联系
+                // day11：cluster与service建立联系
                 cluster.setService(service);
                 service.getClusterMap().put(cluster.getName(), cluster);
             }

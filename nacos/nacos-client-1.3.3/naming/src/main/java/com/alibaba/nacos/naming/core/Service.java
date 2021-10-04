@@ -551,11 +551,11 @@ public class Service extends com.alibaba.nacos.api.naming.pojo.Service implement
      * Re-calculate checksum of service.
      */
     public synchronized void recalculateChecksum() {
-        // 获取当前service所包含的所有instance列表
+        // day17：获取当前service所包含的所有instance列表
         List<Instance> ips = allIPs();
 
         StringBuilder ipsString = new StringBuilder();
-        // 将service所数据追加到ipsString
+        // day17：将service所数据追加到ipsString
         ipsString.append(getServiceString());
 
         if (Loggers.SRV_LOG.isDebugEnabled()) {
@@ -566,7 +566,7 @@ public class Service extends com.alibaba.nacos.api.naming.pojo.Service implement
             Collections.sort(ips);
         }
 
-        // 遍历所有instances，将它们的数据进行追加
+        // day17：遍历所有instances，将它们的数据进行追加
         for (Instance ip : ips) {
             String string = ip.getIp() + ":" + ip.getPort() + "_" + ip.getWeight() + "_" + ip.isHealthy() + "_" + ip
                     .getClusterName();
@@ -574,7 +574,7 @@ public class Service extends com.alibaba.nacos.api.naming.pojo.Service implement
             ipsString.append(",");
         }
 
-        // 最终获取到当前service的所有数据，经MD5加密后赋值给checksum
+        // day17：最终获取到当前service的所有数据，经MD5加密后赋值给checksum
         checksum = MD5Utils.md5Hex(ipsString.toString(), Constants.ENCODE);
     }
 
