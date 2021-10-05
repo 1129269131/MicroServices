@@ -12,15 +12,20 @@
 				enabled: false
 	2、nacos-03-consumer-feign-8080 --》pom.xml --》注释 <artifactId>spring-cloud-starter-loadbalancer</artifactId>
 	3、切换DepartService.java类的@FeignClient的连接方式为负载均衡
-
+	
 一、FeignClientFactoryBean.java类的 return (T) loadBalance(builder, context, 处打上断点
 
-二、ReflectiveFeign.java类的 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable { 方法里打上断点
+二、BaseLoadBalancer.java类的 return rule.choose(key); 处打上断点
 
-三、SynchronousMethodHandler.java类的 response = client.execute(request, options); 处打上断点
+三、ReflectiveFeign.java类的 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable { 方法里打上断点
 
-四、debugger模式启动启动 nacos-01-provider-8081、nacos-03-consumer-feign-8080
+四、SynchronousMethodHandler.java类的 response = client.execute(request, options); 处打上断点
+
+五、debugger模式启动启动 nacos-01-provider-8081、nacos-03-consumer-feign-8080
 				
-五、debugger并进行查看
+六、debugger并进行查看
 
-六、浏览器访问：http://localhost:8080/consumer/depart/get/3
+七、浏览器访问：http://localhost:8080/consumer/depart/get/3
+
+
+PS：BaseLoadBalancer.java类的 return rule.choose(key); 处，鼠标ctrl+鼠标左键选择不同的负载均衡算法实现进行查看

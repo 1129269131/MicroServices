@@ -18,3 +18,7 @@
 			复习说明（1，2结合着复习）：
 				1、nacos-01-provider-8081、nacos-02-consumer-8080（debugger+解析图+微服务注册中心.pdf）
 				2、nacos-client-1.3.3（代码注释说明+微服务注册中心.pdf）
+				
+	三、openFeign
+		openFeign --》spring-cloud-openfeign-2.2.x --》resources（note+static+代码注释说明+大厂学苑-声明式客户端OpenFeign与负载均衡.pdf）
+	
