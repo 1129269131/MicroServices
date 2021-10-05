@@ -1,7 +1,11 @@
 一、ReflectiveFeign.java类的 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable { 方法里打上断点
 
-二、debugger模式启动启动 nacos-03-consumer-feign-8080
+二、SynchronousMethodHandler.java类的 response = client.execute(request, options); 处打上断点
 
-三、浏览器访问：http://localhost:8080/consumer/depart/get/3
+三、debugger模式启动启动 nacos-03-consumer-feign-8080
+
+四、浏览器访问：http://localhost:8080/consumer/depart/get/3
 				
-四、debugger并进行查看
+五、debugger并进行查看
+
+PS：可分别调试@FeignClient的连接方式为直连方式、Ribbon 负载均衡、Spring Cloud LoadBalancer 负载均衡的网络请求

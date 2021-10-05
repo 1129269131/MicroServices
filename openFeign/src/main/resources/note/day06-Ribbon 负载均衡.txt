@@ -1,16 +1,26 @@
 启动多个provider服务：
-	1、头部菜单栏 --》Edit Configurations... --》VM options中添加：-Dserver.port=8083
+	1、头部菜单栏 --》Edit Configurations... --》选择Nacos01Provider8081Application服务 --》VM options中添加：-Dserver.port=808x
 	2、勾选上 Allow parallel run
 	3、OK
 	4、头部菜单栏 --》项目名旁边的三角启动按钮 --》点击启动
 	5、重复多次执行1~4可开启多个相同服务
+	
+关闭Spring Cloud LoadBalancer 负载均衡：
+	1、nacos-03-consumer-feign-8080 --》resources --》application.yml 注释Spring Cloud LoadBalancer 负载均衡相关配置：
+		loadbalancer:
+			ribbon:
+				enabled: false
+	2、nacos-03-consumer-feign-8080 --》pom.xml --》注释 <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+	3、切换DepartService.java类的@FeignClient的连接方式为负载均衡
 
 一、FeignClientFactoryBean.java类的 return (T) loadBalance(builder, context, 处打上断点，且切换DepartService.java类的@FeignClient的连接方式为负载均衡调用方式
 
 二、ReflectiveFeign.java类的 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable { 方法里打上断点
 
-三、debugger模式启动启动 nacos-01-provider-8081、nacos-03-consumer-feign-8080
-				
-四、debugger并进行查看
+三、SynchronousMethodHandler.java类的 response = client.execute(request, options); 处打上断点
 
-五、浏览器访问：http://localhost:8080/consumer/depart/get/3
+四、debugger模式启动启动 nacos-01-provider-8081、nacos-03-consumer-feign-8080
+				
+五、debugger并进行查看
+
+六、浏览器访问：http://localhost:8080/consumer/depart/get/3

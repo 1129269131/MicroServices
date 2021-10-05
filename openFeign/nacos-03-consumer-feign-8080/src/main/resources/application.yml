@@ -4,7 +4,10 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 127.0.0.1:8848
+        namespace: 6d7a1cf1-01ff-4b53-a2c7-7e836d268492
+        group: my_atguigu
+        cluster-name: myItdachangCluster
     # day07
     loadbalancer:
       ribbon:

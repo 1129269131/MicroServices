@@ -6,11 +6,8 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
-        # day01：默认为public
         namespace: 6d7a1cf1-01ff-4b53-a2c7-7e836d268492
-        # day01：默认为DEFAULT_GROUP
         group: my_atguigu
-        # day01：默认为DEFAULT，注意，不能存在下划线
         cluster-name: myItdachangCluster
 
   application:
@@ -25,7 +22,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/localhost_3306?useUnicode=true&amp;characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/microServices?useUnicode=true&amp;characterEncoding=utf8
     username: root
     password: root
 

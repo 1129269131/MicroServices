@@ -19,7 +19,7 @@ import java.util.List;
 // day01：但一般起名与业务方法名相同，好用
 // day01：3)必须要有@FeignClient注解
 //@FeignClient(value = "abcmsc-provider-depart", url = "localhost:8081")// day04：直连方式
-@FeignClient(value = "abcmsc-provider-depart")// day04：负载均衡调用方式
+@FeignClient(value = "abcmsc-provider-depart")// day06：负载均衡调用方式
 @RequestMapping("/provider/depart")
 public interface DepartService {
     @PostMapping("/save")

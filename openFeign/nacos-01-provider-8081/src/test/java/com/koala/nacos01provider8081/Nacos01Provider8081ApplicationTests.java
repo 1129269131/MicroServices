@@ -1,3 +1,4 @@
+/*
 package com.koala.nacos01provider8081;
 
 import org.junit.jupiter.api.Test;
@@ -11,3 +12,4 @@ class Nacos01Provider8081ApplicationTests {
     }
 
 }
+*/
