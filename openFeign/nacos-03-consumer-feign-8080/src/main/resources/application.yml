@@ -9,6 +9,6 @@ spring:
         group: my_atguigu
         cluster-name: myItdachangCluster
     # day07
-    loadbalancer:
-      ribbon:
-        enabled: false
+#    loadbalancer:
+#      ribbon:
+#        enabled: false

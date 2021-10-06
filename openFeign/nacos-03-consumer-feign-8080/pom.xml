@@ -29,10 +29,10 @@
         </dependency>
 
         <!-- day07 -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!--nacos discovery依赖-->
         <dependency>

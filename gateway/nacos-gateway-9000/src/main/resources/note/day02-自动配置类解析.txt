@@ -1,0 +1,1 @@
+关键类：GatewayAutoConfiguration.java、GatewayClassPathWarningAutoConfiguration.java、GatewayDiscoveryClientAutoConfiguration.java

@@ -1,3 +1,4 @@
+/*
 package com.koala.nacosgateway9000;
 
 import org.junit.jupiter.api.Test;
@@ -11,3 +12,4 @@ class NacosGateway9000ApplicationTests {
     }
 
 }
+*/

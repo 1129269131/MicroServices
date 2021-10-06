@@ -28,4 +28,4 @@
 七、浏览器访问：http://localhost:8080/consumer/depart/get/3
 
 
-PS：BaseLoadBalancer.java类的 return rule.choose(key); 处，鼠标ctrl+鼠标左键选择不同的负载均衡算法实现进行查看
+PS：查看负载均衡算法：BaseLoadBalancer.java类的 return rule.choose(key); 处，鼠标ctrl+鼠标左键选择不同的负载均衡算法实现进行查看

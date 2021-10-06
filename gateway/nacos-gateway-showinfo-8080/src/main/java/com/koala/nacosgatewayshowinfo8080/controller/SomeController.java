@@ -1,4 +1,4 @@
-package com.abc.controller;
+package com.koala.nacosgatewayshowinfo8080.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
