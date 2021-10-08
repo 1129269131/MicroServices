@@ -1,0 +1,5 @@
+一、SentinelAutoConfiguration.java类的 return new SentinelResourceAspect(); 处打上断点
+
+二、debugger模式启动 consumer-8080
+				
+三、debugger并进行查看
