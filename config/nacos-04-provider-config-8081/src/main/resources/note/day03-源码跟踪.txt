@@ -1,5 +1,0 @@
-一、NacosPropertySourceLocator.java类的 public PropertySource<?> locate(Environment env) { 方法里打上断点
-
-二、debugger模式启动 nacos-04-provider-config-8081
-				
-三、debugger并进行查看

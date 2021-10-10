@@ -1,7 +1,0 @@
-一、NacosNamingService.java类的 beatReactor.addBeatInfo(groupedServiceName, beatInfo); 处打上断点
-
-二、BeatReactor.java类的 public void run() { 方法里打上断点
-
-三、debugger模式启动nacos-01-provider-8081
-				
-四、debugger并进行查看
